@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ReversiGameAI extends JFrame {
@@ -112,6 +113,25 @@ public class ReversiGameAI extends JFrame {
 
         repaint();
         revalidate();
+        printBoardState();
+        System.out.println("Player " + currentPlayer + "'s turn.");
+        if (!hasAvailableMoves(BLACK) && !hasAvailableMoves(WHITE)) {
+            displayResult();
+        } else if (currentGameMode == GameMode.VS_BOT && currentPlayer == WHITE) {
+            // Human vs. Bot game, check if the human player has no valid moves
+            if (!hasAvailableMoves(BLACK)) {
+                displayResult();
+            }
+        }
+    }
+    private void printBoardState() {
+        System.out.println("\nCurrent board state:");
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
     private void switchPlayer() {
@@ -216,12 +236,19 @@ public class ReversiGameAI extends JFrame {
 
         if (blackCount > whiteCount) {
             System.out.println("Winner: Black");
+            if (currentGameMode == GameMode.VS_BOT && currentPlayer == BLACK) {
+                System.out.println("Congratulations! You won!");
+            }
         } else if (whiteCount > blackCount) {
             System.out.println("Winner: White");
+            if (currentGameMode == GameMode.VS_BOT && currentPlayer == WHITE) {
+                System.out.println("Sorry, you lost!");
+            }
         } else {
             System.out.println("It's a Tie");
         }
     }
+
 
     private class ButtonActionListener implements ActionListener {
         private int row;
@@ -368,7 +395,7 @@ public class ReversiGameAI extends JFrame {
                     if (!hasAvailableMoves(currentPlayer)) {
                         switchPlayer();
                         if (!hasAvailableMoves(currentPlayer)) {
-                            displayResult();
+                            //displayResult();
                         } else {
                             automaticGame();
                         }
@@ -388,7 +415,7 @@ public class ReversiGameAI extends JFrame {
                     if (!hasAvailableMoves(currentPlayer)) {
                         switchPlayer();
                         if (!hasAvailableMoves(currentPlayer)) {
-                            displayResult();
+                            //displayResult();
                         } else {
                             automaticGame();
                         }
@@ -447,7 +474,7 @@ public class ReversiGameAI extends JFrame {
                 if (!hasAvailableMoves(currentPlayer)) {
                     switchPlayer();
                     if (!hasAvailableMoves(currentPlayer)) {
-                        displayResult();
+                        //displayResult();
                     } else {
                         automaticGame();
                     }
@@ -470,3 +497,64 @@ enum GameMode {
     BOT_VS_BOT,
     VS_PLAYER
 }
+
+//class ReversiGameAITest {
+//
+//    @Test
+//    void testInitialBoardSetup() {
+//        ReversiGameAI game = new ReversiGameAI();
+//
+//        char[][] expectedBoard = new char[][]{
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//                {' ', ' ', ' ', '-', '+', ' ', ' ', ' '},
+//                {' ', ' ', ' ', '+', '-', ' ', ' ', ' '},
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//                {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+//        };
+//
+//        assertArrayEquals(expectedBoard, game.getBoard());
+//    }
+//
+//    @Test
+//    void testPlayerVsBot() {
+//        ReversiGameAI game = new ReversiGameAI();
+//        game.setGameMode(GameMode.VS_BOT);
+//        game.getCurrentPlayer().makeMove(); // Ход игрока
+//        game.updateUI();
+//
+//        // Проверка на победу игрока
+//        assertTrue(game.isGameOver());
+//        assertEquals(BLACK, game.getWinner());
+//        assertTrue(outputStream.toString().contains("Игрок + выиграл!"));
+//
+//        // Проверка на правильность отображаемого счета
+//        assertEquals(60, game.countPieces(BLACK));
+//        assertEquals(4, game.countPieces(WHITE));
+//        assertTrue(outputStream.toString().contains("Количество черных фишек: 60"));
+//        assertTrue(outputStream.toString().contains("Количество белых фишек: 4"));
+//    }
+//
+//    @Test
+//    void testBotVsBot() {
+//        ReversiGameAI game = new ReversiGameAI();
+//        game.setGameMode(GameMode.BOT_VS_BOT);
+//        game.runGame();
+//
+//        // Проверка на победу бота
+//        assertTrue(game.isGameOver());
+//        assertEquals(BLACK, game.getWinner());
+//        assertTrue(outputStream.toString().contains("Игрок + выиграл!"));
+//
+//        // Проверка на правильность отображаемого счета
+//        assertEquals(64, game.countPieces(BLACK));
+//        assertEquals(0, game.countPieces(WHITE));
+//        assertTrue(outputStream.toString().contains("Количество черных фишек: 64"));
+//        assertTrue(outputStream.toString().contains("Количество белых фишек: 0"));
+//    }
+//
+//
+//}
+//
